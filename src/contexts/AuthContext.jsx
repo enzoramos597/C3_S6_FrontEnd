@@ -1,59 +1,115 @@
 import { createContext, useContext, useState, useEffect } from "react"
 import axios from "axios"
-// ✅ Importaciones completas y correctas, incluyendo API_USER_CRUD
-import { API_LOGIN, API_USER_CRUD } from "../services/api"
+import { API_LOGIN, API_USER_CRUD, API_IDMOVIES } from "../services/api"
 
 const AuthContext = createContext()
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext)
 
 export const AuthProvider = ({ children }) => {
-
-    // 🟦 USER GUARDADO EN LOCALSTORAGE (Inicialización)
     const [user, setUser] = useState(null)
-    // 🛑 Mantenemos loading en true para la lectura inicial de localStorage
     const [loading, setLoading] = useState(true)
 
-    // 🛑 EFECTO: Leer localStorage y finalizar la carga (Se mantiene)
-    useEffect(() => {
-        try {
-            const saved = localStorage.getItem("user")
-            if (saved) {
-                const parsedUser = JSON.parse(saved);
-                setUser(parsedUser);
-            }
-        } catch (error) {
-            console.error("Error al parsear el usuario de localStorage:", error);
-            localStorage.removeItem("user");
-        } finally {
-            setLoading(false);
+    // 🆕 FUNCIÓN AUXILIAR: Hidrata los favoritos (IDs → Objetos completos)
+    const hydrateFavoritos = async (favoritosIds, token) => {
+        if (!Array.isArray(favoritosIds) || favoritosIds.length === 0) {
+            return [];
         }
+
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+
+        try {
+            // Obtener detalles de cada película
+            const promises = favoritosIds.map(id => 
+                axios.get(`${API_IDMOVIES}/${id}`, config)
+                    .then(res => {
+                        const movie = res.data.pelicula || res.data;
+                        return {
+                            id: String(movie._id || movie.id),
+                            title: String(movie.original_title || movie.title || 'Título Desconocido'),
+                            poster: movie.poster || '',
+                            detalle: String(movie.detalle || 'Sin descripción disponible')
+                        };
+                    })
+                    .catch(err => {
+                        console.error(`Error obteniendo película ${id}:`, err);
+                        return null; // Si falla, retornar null para filtrarlo después
+                    })
+            );
+
+            const results = await Promise.all(promises);
+            // Filtrar los que fallaron (null)
+            return results.filter(fav => fav !== null);
+
+        } catch (error) {
+            console.error("Error hidratando favoritos:", error);
+            return [];
+        }
+    };
+
+    // Leer localStorage al iniciar
+    useEffect(() => {
+        const initAuth = async () => {
+            try {
+                const saved = localStorage.getItem("user");
+                if (saved) {
+                    const parsedUser = JSON.parse(saved);
+                    
+                    // 🔥 CLAVE: Si los favoritos son strings (IDs), hidratarlos
+                    if (parsedUser.favoritos && parsedUser.favoritos.length > 0) {
+                        const firstFav = parsedUser.favoritos[0];
+                        
+                        // Si el primer favorito es un string, son IDs
+                        if (typeof firstFav === 'string') {
+                            const hydrated = await hydrateFavoritos(parsedUser.favoritos, parsedUser.token);
+                            parsedUser.favoritos = hydrated;
+                        }
+                    }
+                    
+                    setUser(parsedUser);
+                }
+            } catch (error) {
+                console.error("Error al inicializar auth:", error);
+                localStorage.removeItem("user");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        initAuth();
     }, []);
 
-    // 🟩 LOGIN (Se mantiene el POST con token)
+    // 🟩 LOGIN
     const login = async (correo, contrasenia) => {
         setLoading(true);
         try {
-            const res = await axios.post(API_LOGIN, {
-                correo: correo,
-                contrasenia: contrasenia
-            });
+            const res = await axios.post(API_LOGIN, { correo, contrasenia });
 
             const loggedInUser = res.data.user;
             const token = res.data.token;
-            // Aseguramos que el ID de Mongoose (_id) se use si está disponible
             const idField = loggedInUser._id ? '_id' : 'id';
 
-            const userWithToken = {
+            let userWithToken = {
                 ...loggedInUser,
                 token: token,
-                // Garantizamos que _id siempre esté presente
                 _id: loggedInUser[idField]
             };
 
             if (loggedInUser.estado === 0) {
                 return userWithToken;
+            }
+
+            // 🔥 HIDRATAR FAVORITOS después del login
+            if (userWithToken.favoritos && userWithToken.favoritos.length > 0) {
+                const firstFav = userWithToken.favoritos[0];
+                
+                // Si son strings (IDs), hidratarlos
+                if (typeof firstFav === 'string') {
+                    const hydrated = await hydrateFavoritos(userWithToken.favoritos, token);
+                    userWithToken.favoritos = hydrated;
+                }
             }
 
             setUser(userWithToken);
@@ -69,27 +125,25 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
-    // 🔴 LOGOUT (Se mantiene)
+    // 🔴 LOGOUT
     const logout = () => {
         setUser(null)
         localStorage.removeItem("user")
         window.location.href = "/"
     }
 
-    // ⭐ IMPLEMENTACIÓN CRÍTICA PARA FAVORITOS - 100% FUNCIONAL ⭐
+    // ⭐ ACTUALIZAR FAVORITOS
     const updateUserFavoritos = async (favoritos) => {
-        // Verificar que el usuario y los datos necesarios existan
         if (!user || !user._id || !user.token) {
             console.error("Usuario no autenticado o ID/Token faltante.");
             return;
         }
 
         try {
-            // 1. Lista de favoritos para actualizar el estado LOCAL (contiene {id, title, poster})
+            // Actualizar estado local con objetos completos
             const updatedUser = { ...user, favoritos };
 
-            // 2. ✅ CORRECCIÓN CLAVE: Mapeamos el array de objetos a un array de solo strings de ID 
-            //    Esto es lo que Mongoose espera en el backend.
+            // Enviar solo IDs al backend
             const favoritosIds = favoritos.map(fav => fav.id);
 
             const config = {
@@ -99,23 +153,17 @@ export const AuthProvider = ({ children }) => {
                 }
             };
 
-            // 3. ✅ USAMOS API_USER_CRUD: Enviamos SOLO LOS IDS al endpoint de actualización.
             await axios.put(`${API_USER_CRUD}/${user._id}`, { favoritos: favoritosIds }, config);
 
-            // 4. Actualizar el estado del contexto y localStorage con el array de OBJETOS completos.
+            // Actualizar contexto y localStorage
             setUser(updatedUser);
             localStorage.setItem("user", JSON.stringify(updatedUser));
 
         } catch (error) {
-            console.error("Error al guardar favoritos en el servidor:", error.response?.data || error);
-            // Re-lanzar el error para que MovieDetail pueda manejar la notificación
+            console.error("Error al guardar favoritos:", error.response?.data || error);
             throw error;
         }
     }
-
-    // 💡 Nota: No incluí las funciones de perfil (updateUserProfile, deleteUserProfile) 
-    // ya que no proporcionaste sus endpoints, pero necesitarían usar API_USER_CRUD 
-    // y user._id para ser funcionales.
 
     return (
         <AuthContext.Provider
