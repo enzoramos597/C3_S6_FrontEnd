@@ -1,0 +1,30 @@
+@import "tailwindcss";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+
+/* FIX para Toastify que Tailwind pisa */
+.Toastify__toast-container {
+  z-index: 999999 !important;
+}
+
+.Toastify__toast {
+  z-index: 999999 !important;
+}
+
+.Toastify__toast-body {
+  z-index: 999999 !important;
+}
+
+.Toastify__toast--success,
+.Toastify__toast--info,
+.Toastify__toast--error {
+  z-index: 999999 !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
