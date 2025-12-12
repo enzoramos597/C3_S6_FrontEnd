@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
-import { API_USERS } from "../services/api";
+import { API_USERS } from "../services/api"; // ✅ Esta está bien para listar todos
 import { useAuth } from "./AuthContext";
 
 const ProfileContext = createContext();
@@ -10,21 +10,13 @@ export const useProfiles = () => useContext(ProfileContext);
 export const ProfileProvider = ({ children }) => {
     const [usuario, setUsuario] = useState([]);
     const [loading, setLoading] = useState(false);
-    // 🛑 OBTENEMOS EL USUARIO Y EL TOKEN DIRECTAMENTE
     const { user } = useAuth();
 
-    // 🛑 EXTRAEMOS EL TOKEN UNA SOLA VEZ
     const token = user?.token;
 
     const fetchUsuario = async () => {
-        // 1. OBTENER EL TOKEN DEL CONTEXTO
-        // 🛑 Ahora 'token' se obtiene directamente del estado 'user'.
-        //    No es necesario volver a buscarlo en localStorage.
-
-        // 2. Si no hay token, no intentar la petición.
         if (!token) {
             setLoading(false);
-            // 🛑 Cambiamos a console.log/warn para que no parezca un error de la aplicación
             console.log("ProfileContext: Token no disponible. Esperando autenticación.");
             return;
         }
@@ -32,14 +24,13 @@ export const ProfileProvider = ({ children }) => {
         setLoading(true);
 
         try {
-            // 3. ENVIAR EL TOKEN EN EL HEADER 'Authorization'
             const config = {
                 headers: {
-                    Authorization: `Bearer ${token}`, // Usamos el token del estado
+                    Authorization: `Bearer ${token}`,
                 },
             };
 
-            // 4. Hacer la petición
+            // ✅ CORRECCIÓN: Si quieres obtener TODOS los usuarios, usa API_USERS
             const { data } = await axios.get(API_USERS, config);
             setUsuario(data);
 
@@ -47,7 +38,7 @@ export const ProfileProvider = ({ children }) => {
             console.error("Error fetching Usuario:", error);
 
             if (axios.isAxiosError(error) && error.response?.status === 401) {
-                console.warn("Sesión expirada o no autorizada. Sugerencia: llamar a logout aquí.");
+                console.warn("Sesión expirada o no autorizada.");
             }
 
         } finally {
@@ -56,23 +47,19 @@ export const ProfileProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        // 🛑 La lógica es correcta: si hay usuario (y por lo tanto token)
-        //    llama a fetchUsuario.
         if (user) {
             fetchUsuario()
         } else {
-            // 🛑 OPCIONAL: Si el usuario se desconecta, limpiar el estado local
             setUsuario([]);
             setLoading(false);
         }
-    }, [user, token]); // 🛑 Añadimos 'token' a las dependencias para robustez (aunque 'user' basta)
+    }, [user, token]);
 
     return (
         <ProfileContext.Provider
             value={{
                 usuario,
                 loading,
-                // ...
             }}
         >
             {children}

@@ -82,49 +82,53 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     // 🟩 LOGIN
-    const login = async (correo, contrasenia) => {
-        setLoading(true);
-        try {
-            const res = await axios.post(API_LOGIN, { correo, contrasenia });
+    // 🟩 LOGIN - LÍNEA ~70
+const login = async (correo, contrasenia) => {
+    setLoading(true);
+    try {
+        const res = await axios.post(API_LOGIN, { correo, contrasenia });
 
-            const loggedInUser = res.data.user;
-            const token = res.data.token;
-            const idField = loggedInUser._id ? '_id' : 'id';
+        const loggedInUser = res.data.user;
+        const token = res.data.token;
+        const idField = loggedInUser._id ? '_id' : 'id';
 
-            let userWithToken = {
-                ...loggedInUser,
-                token: token,
-                _id: loggedInUser[idField]
-            };
+        // ✅ CORRECCIÓN: Asegurarse de guardar el role._id o role como string
+        let userWithToken = {
+            ...loggedInUser,
+            token: token,
+            _id: loggedInUser[idField],
+            // 🔥 GUARDAR EL ROLE ID COMO STRING
+            role: typeof loggedInUser.role === 'object' 
+                ? String(loggedInUser.role._id) 
+                : String(loggedInUser.role)
+        };
 
-            if (loggedInUser.estado === 0) {
-                return userWithToken;
-            }
-
-            // 🔥 HIDRATAR FAVORITOS después del login
-            if (userWithToken.favoritos && userWithToken.favoritos.length > 0) {
-                const firstFav = userWithToken.favoritos[0];
-                
-                // Si son strings (IDs), hidratarlos
-                if (typeof firstFav === 'string') {
-                    const hydrated = await hydrateFavoritos(userWithToken.favoritos, token);
-                    userWithToken.favoritos = hydrated;
-                }
-            }
-
-            setUser(userWithToken);
-            localStorage.setItem("user", JSON.stringify(userWithToken));
-
+        if (loggedInUser.estado === 0) {
             return userWithToken;
-
-        } catch (error) {
-            console.error("Error en login:", error);
-            return null;
-        } finally {
-            setLoading(false);
         }
-    }
 
+        // Hidratar favoritos...
+        if (userWithToken.favoritos && userWithToken.favoritos.length > 0) {
+            const firstFav = userWithToken.favoritos[0];
+            
+            if (typeof firstFav === 'string') {
+                const hydrated = await hydrateFavoritos(userWithToken.favoritos, token);
+                userWithToken.favoritos = hydrated;
+            }
+        }
+
+        setUser(userWithToken);
+        localStorage.setItem("user", JSON.stringify(userWithToken));
+
+        return userWithToken;
+
+    } catch (error) {
+        console.error("Error en login:", error);
+        return null;
+    } finally {
+        setLoading(false);
+    }
+}
     // 🔴 LOGOUT
     const logout = () => {
         setUser(null)
@@ -170,6 +174,7 @@ export const AuthProvider = ({ children }) => {
             value={{
                 user,
                 login,
+                token: user?.token, 
                 logout,
                 updateUserFavoritos,
                 loading

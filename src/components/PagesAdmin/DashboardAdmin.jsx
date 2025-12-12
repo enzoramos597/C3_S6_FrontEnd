@@ -19,7 +19,7 @@ export default function DashboardAdmin() {
         <div          
           className="relative h-60 rounded-2xl overflow-hidden cursor-pointer group bg-gray-900 hover:scale-105"
         >
-          <Link to="/uploadmovie" className="w-full h-full block">
+          <Link to="/admin/uploadmovie" className="w-full h-full block">
             <img
               src={cargarpelicula}
               className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition"
@@ -51,7 +51,7 @@ export default function DashboardAdmin() {
           //whileHover={{ scale: 1.05 }}
           className="relative h-60 rounded-2xl overflow-hidden cursor-pointer group bg-gray-900 hover:scale-105"
         >
-          <Link to="/gestion-usuarios" className="w-full h-full block">
+          <Link to="/admin/gestion-usuarios" className="w-full h-full block">
             <img
               src={gestionusuarios}
               className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition"

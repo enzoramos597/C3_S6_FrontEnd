@@ -171,7 +171,7 @@ const ListaPelicula = () => {
               {/* Botón solo Admin */}
               {isAdmin && (
                 <button
-                  onClick={() => navigate(`/updatemovie/${peli._id}`)} // Usamos _id para la edición
+                  onClick={() => navigate(`/admin/updatemovie/${peli._id}`)} // Usamos _id para la edición
                   className="absolute top-2 right-2 bg-blue-600 text-white px-2 py-1 rounded text-xs shadow-lg hover:bg-blue-500 transition"
                 >
                   Editar

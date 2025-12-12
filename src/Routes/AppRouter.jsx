@@ -12,15 +12,23 @@ import PruebaUser from "../components/PagesUser/PruebaUser";
 import PruebaAdmin from "../components/PagesAdmin/PruebaAdmin";
 import ListaPelicula from "../components/PagesMovies/ListaPelicula";
 import MovieDetail from "../components/PagesMovies/MovieDetail";
-
+import UploadMovie from "../components/PagesMovies/UploadMovie";
+import ProfileSelectorAdmin from "../components/PagesAdmin/ProfileSelectorAdmin";
+import DetailPerfilAdmin from "../components/PagesAdmin/DetailPerfilAdmin";
+import UpdateMovie from "../components/PagesMovies/UpdateMovie";
 const AppRouter = () => {
 
-    const {user} = useAuth();
-    console.log("Usuario actual en AppRouter:", user?.role);
+     const {user} = useAuth();
+    
+    console.log("Usuario en AppRouter:", user);
+    console.log("Role del usuario:", user?.role);
+    
+    // ✅ COMPARAR CON EL ROLE ID (STRING)
     const isAdmin = user && user.role === '69366436d9ae941a18015fc0';
-    console.log(isAdmin)
-    const isUser = user && user.role === '6936638cd9ae941a18015fbb'
-    console.log(isUser)
+    const isUser = user && user.role === '6936638cd9ae941a18015fbb';
+    
+    console.log("Es Admin?", isAdmin);
+    console.log("Es User?", isUser);
 
   return (
     <div
@@ -62,6 +70,10 @@ const AppRouter = () => {
             <Route index element={<DashboardAdmin />} />
             <Route path="peliculas" element= {<ListaPelicula />} />
             <Route path="peliculas/:id" element={<MovieDetail />} />
+            <Route path="uploadmovie" element={<UploadMovie />} />
+            <Route path="updatemovie/:id" element={<UpdateMovie />} />
+            <Route path="gestion-usuarios" element={<ProfileSelectorAdmin/>} />
+            <Route path='gestion-usuarios/usuarios/:id' element={<DetailPerfilAdmin />}/>
             <Route path="*" element={<Navigate to="/admin" replace />} />
             {/*<Route index element= {<PruebaAdmin />} />
             <Route path="*" element={<Navigate to="/admin" replace />} />*/}
