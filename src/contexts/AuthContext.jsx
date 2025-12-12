@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react"
 import axios from "axios"
-import { API_LOGIN, API_USER_CRUD, API_IDMOVIES } from "../services/api"
+import { API_LOGIN, API_USER_CRUD, API_IDMOVIES, API_TRAERUNUSUARIO } from "../services/api"
 
 const AuthContext = createContext()
 
@@ -169,6 +169,55 @@ const login = async (correo, contrasenia) => {
         }
     }
 
+    // 🟢 REFRESCAR USER DESDE LA API — TRAE PERFILES POPULADOS
+
+const refreshUser = async (userId) => {
+    if (!user || !user.token) {
+        console.error("Usuario no autenticado o token faltante.");
+        return;
+    }
+
+    try {
+        const config = {
+            headers: { Authorization: `Bearer ${user.token}` }
+        };
+
+        const res = await axios.get(`${API_TRAERUNUSUARIO}/${userId}`, config);
+        let updated = res.data.usuario || res.data;
+
+        // 🔥 Normalizar perfiles (para que React pueda usarlos)
+        updated.perfiles = Array.isArray(updated.perfiles)
+            ? updated.perfiles.map(p => ({
+                id: String(p._id || p.id),
+                name: p.name,
+                avatar: p.avatar
+            }))
+            : [];
+
+        // ------------------------------------------
+        // ⭐ MISMA LÓGICA QUE updateUserFavoritos
+        // Mezcla el usuario anterior con el nuevo
+        // ------------------------------------------
+
+        const mergedUser = {
+            ...user,         // conserva token, favoritos, etc.
+            ...updated       // pisa datos actualizados (como perfiles)
+        };
+
+        // Guardar en estado + localStorage
+        setUser(mergedUser);
+        localStorage.setItem("user", JSON.stringify(mergedUser));
+
+        return mergedUser;
+
+    } catch (error) {
+        console.error("Error refrescando usuario:", error.response?.data || error);
+        throw error;
+    }
+};
+
+
+
     return (
         <AuthContext.Provider
             value={{
@@ -176,6 +225,7 @@ const login = async (correo, contrasenia) => {
                 login,
                 token: user?.token, 
                 logout,
+                refreshUser,
                 updateUserFavoritos,
                 loading
             }}
