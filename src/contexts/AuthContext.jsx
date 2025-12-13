@@ -172,53 +172,32 @@ const login = async (correo, contrasenia) => {
     // 🟢 REFRESCAR USER DESDE LA API — TRAE PERFILES POPULADOS
 
 const refreshUser = async (userId) => {
-    if (!user || !user.token) {
-        console.error("Usuario no autenticado o token faltante.");
-        return;
-    }
+  if (!user || !user.token) return;
 
-    try {
-        const config = {
-            headers: { Authorization: `Bearer ${user.token}` }
-        };
+  try {
+    const res = await axios.get(
+      `${API_TRAERUNUSUARIO}/${userId}`,
+      {
+        headers: { Authorization: `Bearer ${user.token}` }
+      }
+    );
 
-        const res = await axios.get(`${API_TRAERUNUSUARIO}/${userId}`, config);
-        let updated = res.data.usuario || res.data;
+    const updatedUser = {
+      ...user,
+      ...res.data.usuario
+    };
 
-        // 🔥 Normalizar perfiles (para que React pueda usarlos)
-        updated.perfiles = Array.isArray(updated.perfiles)
-            ? updated.perfiles.map(p => ({
-                id: String(p._id || p.id),
-                name: p.name,
-                avatar: p.avatar
-            }))
-            : [];
+    setUser(updatedUser);
+    localStorage.setItem("user", JSON.stringify(updatedUser));
 
-        // ------------------------------------------
-        // ⭐ MISMA LÓGICA QUE updateUserFavoritos
-        // Mezcla el usuario anterior con el nuevo
-        // ------------------------------------------
+    return updatedUser;
 
-        const mergedUser = {
-            ...user,         // conserva token, favoritos, etc.
-            ...updated       // pisa datos actualizados (como perfiles)
-        };
-
-        // Guardar en estado + localStorage
-        setUser(mergedUser);
-        localStorage.setItem("user", JSON.stringify(mergedUser));
-
-        return mergedUser;
-
-    } catch (error) {
-        console.error("Error refrescando usuario:", error.response?.data || error);
-        throw error;
-    }
+  } catch (error) {
+    console.error("Error refrescando usuario:", error);
+    throw error;
+  }
 };
-
-
-
-    return (
+return (
         <AuthContext.Provider
             value={{
                 user,

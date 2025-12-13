@@ -18,7 +18,8 @@ export const API_IDMOVIES = `${import.meta.env.VITE_API_BASEURL}/api/peliculas`;
 
 export const API_AGREGARPELICULA = `${import.meta.env.VITE_API_BASEURL}/api/agregarPelicula`;
 
-
+//Perfiles
+export const API_PERFILES = `${import.meta.env.VITE_API_BASEURL}/api/usuario`;
 //Roles
 export const API_SHOW_ROLES = `${import.meta.env.VITE_API_BASEURL}/api/mostrarRoles`;
 
