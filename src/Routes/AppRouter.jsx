@@ -19,6 +19,8 @@ import UpdateMovie from "../components/PagesMovies/UpdateMovie";
 import ProfileSelectorUser from "../components/PagesUser/ProfileSelectorUser";
 import LayoutUser from "../components/Layout/LayoutUser";
 import CreateProfileUser from "../components/PagesUser/CreateProfileUser";
+import MovieDetailUser from "../components/PagesMovies/MovieDetailUser";
+import ManageProfilesUser from "../components/PagesUser/ManageProfilesUser";
 const AppRouter = () => {
 
      const {user} = useAuth();
@@ -63,8 +65,10 @@ const AppRouter = () => {
         {isUser && (
           <Route path="/user" element={<LayoutUser />}>            
             <Route index element= {<ProfileSelectorUser />} />  
-            <Route path="peliculas" element= {<ListaPelicula />} />  
-            <Route path="createperfiluser" element={<CreateProfileUser />} />        
+            <Route path="peliculas" element= {<ListaPelicula />} />
+            <Route path="peliculas/:id" element={< MovieDetailUser />} />
+            <Route path="createperfiluser" element={<CreateProfileUser />} />    
+            <Route path="manageprofiles" element={<ManageProfilesUser />} />    
           </Route>
         )}
          {/* 🔴 RUTAS ADMIN */}

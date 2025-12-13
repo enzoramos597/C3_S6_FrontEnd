@@ -14,12 +14,14 @@ export const API_TRAERUNUSUARIO = `${import.meta.env.VITE_API_BASEURL}/api/traer
 export const API_MOVIEEDIT = `${import.meta.env.VITE_API_BASEURL}/api/modificarPelicula`;
 export const API_MOVIES = `${import.meta.env.VITE_API_BASEURL}/api/mostrarPelicula`;
 export const API_OBTENERIDMOVIE = `${import.meta.env.VITE_API_BASEURL}/api/peliculas`;
+export const API_OBTENERIDMOVIEUSER = `${import.meta.env.VITE_API_BASEURL}/api/peliculasuser`;
 export const API_IDMOVIES = `${import.meta.env.VITE_API_BASEURL}/api/peliculas`;
 
 export const API_AGREGARPELICULA = `${import.meta.env.VITE_API_BASEURL}/api/agregarPelicula`;
 
 //Perfiles
 export const API_PERFILES = `${import.meta.env.VITE_API_BASEURL}/api/usuario`;
+
 //Roles
 export const API_SHOW_ROLES = `${import.meta.env.VITE_API_BASEURL}/api/mostrarRoles`;
 

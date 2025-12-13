@@ -3,31 +3,48 @@ import { useNavigate, useParams } from "react-router-dom"
 import axios from "axios"
 import { toast, ToastContainer } from "react-toastify"
 import { useAuth } from "../../contexts/AuthContext"
-import { API_IDMOVIES } from "../../services/api"
+import { API_OBTENERIDMOVIEUSER } from "../../services/api"
 import "react-toastify/dist/ReactToastify.css"
-import { set } from "react-hook-form"
 
-const MovieDetail = () => {
-  const { id } = useParams();
+// 1. CONSTANTES PARA IMÁGENES (Igual que en Admin)
+const API_BASEURL = import.meta.env.VITE_API_BASEURL;
+const BASE_IMG_URL = `${API_BASEURL}/`;
+
+// 2. HELPER PARA OBTENER URL ABSOLUTA (Igual que en Admin)
+const getAbsoluteImageUrl = (path) => {
+  if (!path || path === "") return null;
+  if (path.startsWith('http')) return path;
+  return `${BASE_IMG_URL}${encodeURI(path.startsWith('/') ? path.substring(1) : path)}`;
+};
+
+// 3. HELPER PARA OBTENER EL ID SEGURO (La clave para arreglar el error 400)
+const getMovieId = (movie, paramsId) => {
+    if (movie) {
+        // Prioriza _id (Mongo), luego id, y si falla, usa el de la URL
+        return String(movie._id || movie.id || paramsId);
+    }
+    return String(paramsId);
+};
+
+const MovieDetailUser = () => {
+  const { id } = useParams(); // ID de la URL
   const [movie, setMovie] = useState(null)
   const [loading, setLoading] = useState(false)
 
   const { user, updateUserFavoritos } = useAuth()
   const navigate = useNavigate()
-  // 🛑 OBTENER TOKEN
+  
   const token = user?.token;
+
   // 1) Cargar película
   useEffect(() => {
     const loadMovie = async () => {
-      // ✅ VERIFICAR TOKEN ANTES DE LLAMAR
       if (!token) {
         toast.error("Debes iniciar sesión para ver los detalles.");
-        // Opcionalmente: navigate('/iniciar-sesion');
         setLoading(false);
         return;
       }
 
-      // ✅ CONFIGURACIÓN DEL TOKEN
       const config = {
         headers: {
           Authorization: `Bearer ${token}`
@@ -36,62 +53,66 @@ const MovieDetail = () => {
 
       try {
         setLoading(true);
-        // ✅ PASAR LA CONFIGURACIÓN DEL TOKEN
-        const res = await axios.get(`${API_IDMOVIES}/${id}`, config)
-
-        // 🛑 CORRECCIÓN CLAVE: Acceder a la propiedad 'pelicula' si el backend la devuelve así
-        setMovie(res.data.pelicula || res.data) // Intenta con .pelicula, si no, usa res.data
-
+        const res = await axios.get(`${API_OBTENERIDMOVIEUSER}/${id}`, config)
+        setMovie(res.data.pelicula || res.data)
       } catch (err) {
-        console.error("Error al cargar detalles de la película:", err)
-        // Revisar si fue un 404/401
+        console.error("Error al cargar detalles:", err)
         if (err.response?.status === 404) {
           toast.error("Película no encontrada.");
         } else if (err.response?.status === 401) {
-          toast.error("Sesión expirada o no autorizada.");
+          toast.error("Sesión expirada.");
           navigate('/iniciar-sesion');
         } else {
-          toast.error("Error al obtener la película. Volviendo a inicio.");
+          toast.error("Error al obtener la película.");
         }
-        navigate("/") // Redirige al fallo
       } finally {
         setLoading(false)
       }
     };
 
-    if (id) { // Solo si el ID existe en la URL
+    if (id) { 
       loadMovie();
     }
-  }, [id, token, navigate]) // ✅ Depender también del token
+  }, [id, token, navigate])
 
   // 2) Saber si está en favoritos
   const estaEnFavoritos = useMemo(() => {
-    if (!user || !Array.isArray(user.favoritos) || !movie) return false
-    return user.favoritos.some((f) => String(f.id) === String(movie.id))
-  }, [user, movie])
+    if (!user || !Array.isArray(user.favoritos) || !movie) return false;
+    
+    // USAMOS EL HELPER AQUÍ TAMBIÉN
+    const currentId = getMovieId(movie, id);
+    return user.favoritos.some((f) => String(f.id) === currentId)
+  }, [user, movie, id])
 
   // 3) Agregar a favoritos
   const agregarFavorito = async () => {
     if (!user) return toast.error("Debes iniciar sesión")
+    if (!movie) return toast.error("Espere a que cargue la película");
 
     try {
       const lista = Array.isArray(user.favoritos) ? user.favoritos : []
+      
+      // ✅ CORRECCIÓN 1: Obtener ID seguro
+      const safeId = getMovieId(movie, id);
 
-      if (lista.some((f) => String(f.id) === String(movie.id))) {
+      if (lista.some((f) => String(f.id) === safeId)) {
         toast.info("Ya está en favoritos")
         return
       }
 
+      // ✅ CORRECCIÓN 2: Crear el objeto correctamente con el ID seguro y Url Absoluta
       const nuevoFav = {
-        id: String(movie.id),
-        title: movie.original_title,
-        poster: movie.poster,
+        id: safeId, // <--- ESTO ARREGLA EL ERROR 400
+        title: movie.original_title || movie.title,
+        poster: getAbsoluteImageUrl(movie.poster), // <--- ESTO ARREGLA IMÁGENES ROTAS
+        detalle: movie.detalle || "Sin descripción"
       };
 
       await updateUserFavoritos([...lista, nuevoFav])
 
       toast.success("Película agregada a favoritos ❤️")
-    } catch {
+    } catch (error) {
+      console.error("Error al agregar:", error);
       toast.error("Error al agregar favorito")
     }
   }
@@ -101,8 +122,11 @@ const MovieDetail = () => {
     if (!user) return toast.error("Debes iniciar sesión");
 
     try {
+      // ✅ Usar ID seguro también para borrar
+      const safeId = getMovieId(movie, id);
+
       const nuevosFav = user.favoritos.filter(
-        (f) => String(f.id) !== String(movie.id)
+        (f) => String(f.id) !== safeId
       )
 
       await updateUserFavoritos(nuevosFav);
@@ -113,7 +137,6 @@ const MovieDetail = () => {
     }
   };
 
-  // 5) Estado cargando / no encontrada
   if (loading) return <p className="text-white p-10">Cargando...</p>
   if (!movie) return <p className="text-white p-10">No se encontró la película.</p>
 
@@ -126,13 +149,16 @@ const MovieDetail = () => {
     return url
   };
 
+  // Preparamos la imagen de fondo y poster con la URL absoluta
+  const posterUrl = getAbsoluteImageUrl(movie.poster);
+
   return (
     <div className="min-h-screen bg-black text-white relative">
       <ToastContainer />
 
       <div
         className="absolute inset-0 bg-cover bg-center blur-xl opacity-40"
-        style={{ backgroundImage: `url(${movie.poster})` }}
+        style={{ backgroundImage: `url(${posterUrl})` }}
       ></div>
 
       <div className="relative z-10 max-w-6xl mx-auto p-6">
@@ -141,9 +167,9 @@ const MovieDetail = () => {
           {/* POSTER */}
           <div className="md:w-1/3 flex justify-center">
             <img
-              src={movie.poster}
+              src={posterUrl}
               alt={movie.original_title}
-              className="w-full rounded-xl shadow-lg"
+              className="w-full rounded-xl shadow-lg object-cover"
             />
           </div>
 
@@ -195,4 +221,4 @@ const MovieDetail = () => {
   );
 };
 
-export default MovieDetail;
+export default MovieDetailUser;

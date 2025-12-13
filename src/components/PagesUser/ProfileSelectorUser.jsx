@@ -69,11 +69,13 @@ const ProfileSelectorUser = () => {
   }
 
   const handleAddProfile = () => {
+    console.log(perfiles)
     if (perfiles.length >= 5) {
-      toast.error("Puedes tener hasta 5 perfiles");
+      toast.error("Lo siento, puedes agregar hasta 5 perfiles 😢");
       return;
     }
-    navigate("/admin/createperfiluser");
+    //console.log("intentando navegar a createprofile")
+    navigate("/user/createperfiluser");
   };
 
   return (
@@ -103,7 +105,7 @@ const ProfileSelectorUser = () => {
             key={profile.id}
             name={profile.name}
             avatar={profile.avatar}
-            onClick={() => navigate("/peliculas")}
+            onClick={() => navigate("/user/peliculas")}
           />
         ))}
 
@@ -124,7 +126,7 @@ const ProfileSelectorUser = () => {
       {/* ADMINISTRAR */}
       {perfiles.length > 0 && (
         <button
-          onClick={() => navigate("/manageprofiles")}
+          onClick={() => navigate("/user/manageprofiles")}
           className="mt-8 px-6 py-2 font-semibold bg-gray-800 hover:bg-gray-700 rounded-lg"
         >
           Administrar Perfiles
@@ -132,7 +134,7 @@ const ProfileSelectorUser = () => {
       )}
 
       <button
-        onClick={() => navigate(`/edit-profile/${userId}`)}
+        onClick={() => navigate(`/user/edit-profile/${userId}`)}
         className="mt-4 px-6 py-2 font-semibold bg-gray-800 hover:bg-gray-700 rounded-lg"
       >
         Administrar Cuenta

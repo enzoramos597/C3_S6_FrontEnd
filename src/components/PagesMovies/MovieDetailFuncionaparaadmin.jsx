@@ -1,3 +1,4 @@
+// MovieDetail.jsx
 import { useEffect, useState, useMemo } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import axios from "axios"
@@ -35,13 +36,7 @@ const getAbsoluteImageUrl = (path) => {
 const MAX_FAVORITOS = 5;
 
 const MovieDetail = () => {
-    // 🚨 React Router usa el nombre del parámetro de la URL, que es 'movieId'
-    // si seguiste mi recomendación anterior, por eso usamos 'movieId' aquí.
-    // Si tu ruta es 'peliculas/:id', usa 'id'.
-    const { id: paramId, movieId: paramMovieId } = useParams();
-    // Usamos el ID correcto, priorizando 'id' si la ruta es '.../:id'
-    const currentParamId = paramId || paramMovieId;
-
+    const { id: paramId } = useParams();
     const [movie, setMovie] = useState(null)
     const [loading, setLoading] = useState(false)
 
@@ -66,8 +61,7 @@ const MovieDetail = () => {
 
             try {
                 setLoading(true);
-                // Usamos el ID capturado de los parámetros
-                const res = await axios.get(`${API_IDMOVIES}/${currentParamId}`, config)
+                const res = await axios.get(`${API_IDMOVIES}/${paramId}`, config)
                 setMovie(res.data.pelicula || res.data)
 
             } catch (err) {
@@ -78,28 +72,25 @@ const MovieDetail = () => {
                     toast.error("Sesión expirada o no autorizada.");
                     navigate('/iniciar-sesion');
                 } else {
-                    // 🛑 CORRECCIÓN: Quitamos la redirección inmediata a '/' para depurar el error
-                    toast.error("Error al obtener la película. Revisa la consola para más detalles.");
+                    toast.error("Error al obtener la película. Volviendo a inicio.");
                 }
-                // navigate("/") // COMENTADO para evitar redirección agresiva
+                navigate("/")
             } finally {
                 setLoading(false)
             }
         };
 
-        if (currentParamId) {
+        if (paramId) {
             loadMovie();
         }
-    }, [currentParamId, token, navigate])
-
-    // ... (El resto del código de Favoritos se mantiene igual)
+    }, [paramId, token, navigate])
 
     // 2) Saber si está en favoritos
     const estaEnFavoritos = useMemo(() => {
         if (!user || !Array.isArray(user.favoritos) || !movie) return false
-        const currentMovieId = getMovieId(movie, currentParamId);
+        const currentMovieId = getMovieId(movie, paramId);
         return user.favoritos.some((f) => String(f.id) === currentMovieId)
-    }, [user, movie, currentParamId])
+    }, [user, movie, paramId])
 
     // 3) Agregar a favoritos
     const agregarFavorito = async () => {
@@ -108,7 +99,7 @@ const MovieDetail = () => {
 
         try {
             const lista = Array.isArray(user.favoritos) ? user.favoritos : []
-            const currentMovieId = getMovieId(movie, currentParamId);
+            const currentMovieId = getMovieId(movie, paramId);
 
             // Verificación 1: Límite de 5 películas
             if (lista.length >= MAX_FAVORITOS) {
@@ -145,7 +136,7 @@ const MovieDetail = () => {
         if (!user) return toast.error("Debes iniciar sesión");
 
         try {
-            const currentMovieId = getMovieId(movie, currentParamId);
+            const currentMovieId = getMovieId(movie, paramId);
 
             const nuevosFav = user.favoritos.filter(
                 (f) => String(f.id) !== currentMovieId
@@ -179,8 +170,7 @@ const MovieDetail = () => {
 
             <div
                 className="absolute inset-0 bg-cover bg-center blur-xl opacity-40"
-                // ✅ CORRECCIÓN: Usamos la URL absoluta para el fondo
-                style={{ backgroundImage: `url(${getAbsoluteImageUrl(movie.poster)})` }}
+                style={{ backgroundImage: `url(${movie.poster})` }}
             ></div>
 
             <div className="relative z-10 max-w-6xl mx-auto p-6">
@@ -189,8 +179,7 @@ const MovieDetail = () => {
                     {/* POSTER */}
                     <div className="md:w-1/3 flex justify-center">
                         <img
-                            // ✅ CORRECCIÓN: Usamos la URL absoluta para la imagen principal
-                            src={getAbsoluteImageUrl(movie.poster)}
+                            src={movie.poster}
                             alt={movie.original_title}
                             className="w-full rounded-xl shadow-lg"
                         />
