@@ -1,32 +1,32 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { useAuth } from "../../contexts/AuthContext";
-import { API_USERS } from "../../services/api";
-import ProfileCardAdmin from "../PagesAdmin/ProfileCardAdmin";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react"
+import axios from "axios"
+import { useAuth } from "../../contexts/AuthContext"
+import { API_USERS } from "../../services/api"
+import ProfileCardAdmin from "../PagesAdmin/ProfileCardAdmin"
+import { useNavigate } from "react-router-dom"
 
 const ProfileSelectorAdmin = () => {
-    const { user } = useAuth();
-    const navigate = useNavigate();
+    const { user } = useAuth()
+    const navigate = useNavigate()
 
-    const [usuarios, setUsuarios] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [usuarios, setUsuarios] = useState([])
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const fetchUsuarios = async () => {
             try {
                 if (!user?.token) {
-                    console.error("❌ No hay token — no se puede obtener usuarios");
-                    return;
+                    console.error("❌ No hay token — no se puede obtener usuarios")
+                    return
                 }
 
                 const config = {
                     headers: {
                         Authorization: `Bearer ${user.token}`,
                     },
-                };
+                }
 
-                const res = await axios.get(API_USERS, config);
+                const res = await axios.get(API_USERS, config)
 
                 // Asegurarse de que la respuesta es un array
                 const lista =
@@ -37,16 +37,16 @@ const ProfileSelectorAdmin = () => {
                 setUsuarios(lista);
 
             } catch (error) {
-                console.error("❌ Error obteniendo usuarios:", error);
+                console.error("❌ Error obteniendo usuarios:", error)
             } finally {
-                setLoading(false);
+                setLoading(false)
             }
-        };
+        }
 
-        fetchUsuarios();
-    }, [user]);
+        fetchUsuarios()
+    }, [user])
 
-    if (loading) return <p className="text-white text-center mt-10">Cargando usuarios...</p>;
+    if (loading) return <p className="text-white text-center mt-10">Cargando usuarios...</p>
 
     return (
         <div className='min-h-screen flex flex-col items-center bg-black/90 text-white pt-20 pb-10'>

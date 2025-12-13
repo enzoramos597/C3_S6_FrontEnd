@@ -2,40 +2,40 @@ import LayoutPrincipal from "../components/Layout/LayoutPrincipal"
 import portada from '../assets/Inicio_portada.webp'
 import { Route, Routes, Navigate } from 'react-router-dom'
 import Main from "../components/PagesPrincipal/Main"
-import IniciarSesion from "../components/PagesPrincipal/IniciarSesion";
-import CuentaDeshabilitada from "../components/PagesPrincipal/CuentaDeshabilitada";
-import RegisterFormUser from "../components/PagesPrincipal/RegisterFormUser";
-import { useAuth } from "../contexts/AuthContext";
-import LayoutAdmin from "../components/Layout/LayoutAdmin";
-import DashboardAdmin from "../components/PagesAdmin/DashboardAdmin";
-import PruebaUser from "../components/PagesUser/PruebaUser";
-import PruebaAdmin from "../components/PagesAdmin/PruebaAdmin";
-import ListaPelicula from "../components/PagesMovies/ListaPelicula";
-import MovieDetail from "../components/PagesMovies/MovieDetail";
-import UploadMovie from "../components/PagesMovies/UploadMovie";
-import ProfileSelectorAdmin from "../components/PagesAdmin/ProfileSelectorAdmin";
-import DetailPerfilAdmin from "../components/PagesAdmin/DetailPerfilAdmin";
-import UpdateMovie from "../components/PagesMovies/UpdateMovie";
-import ProfileSelectorUser from "../components/PagesUser/ProfileSelectorUser";
-import LayoutUser from "../components/Layout/LayoutUser";
-import CreateProfileUser from "../components/PagesUser/CreateProfileUser";
-import MovieDetailUser from "../components/PagesMovies/MovieDetailUser";
-import ManageProfilesUser from "../components/PagesUser/ManageProfilesUser";
-import EditProfileUser from "../components/PagesUser/EditProfileUser";
-import RegisterFormAdmin from "../components/PagesPrincipal/RegisterFormAdmin";
+import IniciarSesion from "../components/PagesPrincipal/IniciarSesion"
+import CuentaDeshabilitada from "../components/PagesPrincipal/CuentaDeshabilitada"
+import RegisterFormUser from "../components/PagesPrincipal/RegisterFormUser"
+import { useAuth } from "../contexts/AuthContext"
+import LayoutAdmin from "../components/Layout/LayoutAdmin"
+import DashboardAdmin from "../components/PagesAdmin/DashboardAdmin"
+import PruebaUser from "../components/PagesUser/PruebaUser"
+import PruebaAdmin from "../components/PagesAdmin/PruebaAdmin"
+import ListaPelicula from "../components/PagesMovies/ListaPelicula"
+import MovieDetail from "../components/PagesMovies/MovieDetail"
+import UploadMovie from "../components/PagesMovies/UploadMovie"
+import ProfileSelectorAdmin from "../components/PagesAdmin/ProfileSelectorAdmin"
+import DetailPerfilAdmin from "../components/PagesAdmin/DetailPerfilAdmin"
+import UpdateMovie from "../components/PagesMovies/UpdateMovie"
+import ProfileSelectorUser from "../components/PagesUser/ProfileSelectorUser"
+import LayoutUser from "../components/Layout/LayoutUser"
+import CreateProfileUser from "../components/PagesUser/CreateProfileUser"
+import MovieDetailUser from "../components/PagesMovies/MovieDetailUser"
+import ManageProfilesUser from "../components/PagesUser/ManageProfilesUser"
+import EditProfileUser from "../components/PagesUser/EditProfileUser"
+import RegisterFormAdmin from "../components/PagesPrincipal/RegisterFormAdmin"
 const AppRouter = () => {
 
-     const {user} = useAuth();
+     const {user} = useAuth()
     
-    console.log("Usuario en AppRouter:", user);
-    console.log("Role del usuario:", user?.role);
+    console.log("Usuario en AppRouter:", user)
+    console.log("Role del usuario:", user?.role)
     
     // ✅ COMPARAR CON EL ROLE ID (STRING)
-    const isAdmin = user && user.role === '69366436d9ae941a18015fc0';
-    const isUser = user && user.role === '6936638cd9ae941a18015fbb';
+    const isAdmin = user && user.role === '69366436d9ae941a18015fc0'
+    const isUser = user && user.role === '6936638cd9ae941a18015fbb'
     
-    console.log("Es Admin?", isAdmin);
-    console.log("Es User?", isUser);
+    console.log("Es Admin?", isAdmin)
+    console.log("Es User?", isUser)
 
   return (
     <div

@@ -1,7 +1,7 @@
 // FavoritosModalAdmin.jsx
-import { useEffect } from "react";
-import { useAuth } from "../../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react"
+import { useAuth } from "../../contexts/AuthContext"
+import { useNavigate } from "react-router-dom"
 
 // 🛑 Importamos la URL base para construir la ruta completa de la imagen.
 const API_BASEURL = import.meta.env.VITE_API_BASEURL;
@@ -11,39 +11,39 @@ const BASE_IMG_URL = `${API_BASEURL}/`;
 // Función auxiliar para construir la URL completa de la imagen (MODIFICADA)
 const getImageUrl = (path) => {
   // ✅ CORRECCIÓN CLAVE: Si la ruta no existe o es una cadena vacía, retorna null.
-  if (!path || path === "") return null;
+  if (!path || path === "") return null
 
-  if (path.startsWith('http')) return path;
+  if (path.startsWith('http')) return path
 
-  return `${BASE_IMG_URL}${encodeURI(path.startsWith('/') ? path.substring(1) : path)}`;
-};
+  return `${BASE_IMG_URL}${encodeURI(path.startsWith('/') ? path.substring(1) : path)}`
+}
 
 const FavoritosModalUser = ({ isOpen, onClose }) => {
-  const { user, updateUserFavoritos } = useAuth();
+  const { user, updateUserFavoritos } = useAuth()
 
   // Obtener la lista de favoritos directamente del contexto
-  const favoritos = user?.favoritos || [];
-  const navigate = useNavigate();
+  const favoritos = user?.favoritos || []
+  const navigate = useNavigate()
 
   useEffect(() => {
-    if (!isOpen || !user) return;
-  }, [isOpen, user]);
+    if (!isOpen || !user) return
+  }, [isOpen, user])
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   const eliminarFavorito = (id) => {
     const nuevos = favoritos.filter((f) => String(f.id) !== String(id));
-    updateUserFavoritos(nuevos);
-  };
+    updateUserFavoritos(nuevos)
+  }
 
   const vaciarFavoritos = () => {
-    updateUserFavoritos([]);
-  };
+    updateUserFavoritos([])
+  }
 
   const irADetalle = (id) => {
-    navigate(`/peliculas/${id}`);
-    onClose();
-  };
+    navigate(`/peliculas/${id}`)
+    onClose()
+  }
 
   return (
     <div
@@ -78,8 +78,8 @@ const FavoritosModalUser = ({ isOpen, onClose }) => {
                 <div
                   key={String(fav.id) || index}
                   className="flex items-center bg-neutral-800 p-3 rounded-lg mb-3 shadow relative cursor-pointer
-                                        border-2 border-transparent hover:border-red-500 transition-all duration-200
-                                        hover:scale-[1.03] overflow-visible"
+border-2 border-transparent hover:border-red-500 transition-all duration-200
+hover:scale-[1.03] overflow-visible"
                 >
                   {/* Clic a detalle */}
                   <div

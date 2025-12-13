@@ -1,25 +1,27 @@
-// ModalEditProfile.jsx (VERSIÓN FINAL Y ÓPTIMA)
-
-import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
-import { toast } from "react-toastify";
-import { useAuth } from "../../contexts/AuthContext";
+import { useEffect, useState } from "react"
+import Swal from "sweetalert2"
+import { toast } from "react-toastify"
+import { useAuth } from "../../contexts/AuthContext"
 
 // Importaciones de Avatares (Mantengo tus rutas)
-import doug from "../../assets/avatars/Doug.jpg";
-import starwars from "../../assets/avatars/starwars.jpeg";
-import starwars2 from "../../assets/avatars/starwars2.webp";
-import starwars3 from "../../assets/avatars/starwars3.webp";
+//import doug from "../../assets/avatars/Doug.jpg";
+//import starwars from "../../assets/avatars/starwars.jpeg";
+//import starwars2 from "../../assets/avatars/starwars2.webp";
+//import starwars3 from "../../assets/avatars/starwars3.webp";
+import doug from "../../../public/avatars/Doug.jpg"
+import starwars from "../../../public/avatars/starwars.jpeg"
+import starwars2 from "../../../public/avatars/starwars2.webp"
+import starwars3 from "../../../public/avatars/starwars3.webp"
 
-const avatars = [doug, starwars, starwars2, starwars3];
+const avatars = [doug, starwars, starwars2, starwars3]
 
 // El prop onClose ahora acepta un booleano (didSave)
 const ModalEditProfile = ({ isOpen, onClose, profile }) => {
   // Desestructuramos el usuario y la función de actualización del perfil
-  const { user, updateUserProfile } = useAuth();
+  const { user, updateUserProfile } = useAuth()
 
-  const [name, setName] = useState("");
-  const [selectedAvatar, setSelectedAvatar] = useState("");
+  const [name, setName] = useState("")
+  const [selectedAvatar, setSelectedAvatar] = useState("")
 
   // 1. Cargar datos del perfil al abrir el modal o cambiar de perfil
   useEffect(() => {
@@ -30,7 +32,7 @@ const ModalEditProfile = ({ isOpen, onClose, profile }) => {
       setSelectedAvatar(profile.avatar);
     }, 0);
 
-    return () => clearTimeout(t);
+    return () => clearTimeout(t)
   }, [profile]);
 
   if (!isOpen) return null;
@@ -38,8 +40,8 @@ const ModalEditProfile = ({ isOpen, onClose, profile }) => {
   // 💾 GUARDAR CAMBIOS
   const handleSave = async () => {
     try {
-      const trimmedName = name.trim();
-      const currentProfileId = profile.id; // ID del perfil que estamos editando
+      const trimmedName = name.trim()
+      const currentProfileId = profile.id// ID del perfil que estamos editando
 
       // ❗ 1. VALIDAR NOMBRE VACÍO
       if (trimmedName.length === 0) {
@@ -68,16 +70,16 @@ const ModalEditProfile = ({ isOpen, onClose, profile }) => {
           confirmButtonText: "Entendido",
           background: "#1f1f1f",
           color: "white",
-        });
-        return;
+        })
+        return
       }
 
       // ❗ 3. VALIDAR CAMBIOS
-      const originalNameTrimmed = String(profile.name || '').trim();
+      const originalNameTrimmed = String(profile.name || '').trim()
       if (trimmedName === originalNameTrimmed && selectedAvatar === profile.avatar) {
-        toast.info("No se han detectado cambios.");
-        onClose(false); // No hubo cambios, cerramos sin recargar.
-        return;
+        toast.info("No se han detectado cambios.")
+        onClose(false) // No hubo cambios, cerramos sin recargar.
+        return
       }
 
       // 4. Confirmación de guardado
@@ -92,31 +94,31 @@ const ModalEditProfile = ({ isOpen, onClose, profile }) => {
       });
 
       if (confirm.isDismissed) {
-        toast.info("Edición cancelada");
+        toast.info("Edición cancelada")
         // Si cancela, cerramos sin indicar guardado
-        onClose(false);
-        return;
+        onClose(false)
+        return
       }
 
       // 5. Llamada a la función del contexto (Guardar)
       await updateUserProfile(currentProfileId, {
         name: trimmedName,
         avatar: selectedAvatar,
-      });
+      })
 
       // 6. Feedback y cierre (SOLO si no hay error y se confirma)
-      toast.success("Perfil actualizado correctamente");
+      toast.success("Perfil actualizado correctamente")
 
       // 🛑 CLAVE: Cerramos y pasamos TRUE para indicar que se debe recargar la lista
-      onClose(true);
+      onClose(true)
 
     } catch (error) {
-      console.error("Error al guardar el perfil:", error.response?.data || error);
-      toast.error(error.response?.data?.mensaje || "Error al actualizar el perfil. Intenta de nuevo.");
+      console.error("Error al guardar el perfil:", error.response?.data || error)
+      toast.error(error.response?.data?.mensaje || "Error al actualizar el perfil. Intenta de nuevo.")
       // Si hay error, cerramos sin indicar guardado
-      onClose(false);
+      onClose(false)
     }
-  };
+  }
 
   return (
     <div

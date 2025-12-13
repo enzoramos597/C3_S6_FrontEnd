@@ -1,19 +1,19 @@
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import Swal from "sweetalert2";
-import { toast } from "react-toastify";
-import axios from "axios";
-import { useAuth } from "../../contexts/AuthContext";
+import { useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { Link, useNavigate, useParams } from "react-router-dom"
+import Swal from "sweetalert2"
+import { toast } from "react-toastify"
+import axios from "axios"
+import { useAuth } from "../../contexts/AuthContext"
 import {
   API_TRAERUNUSUARIO,
   API_USER_MODIFICARUNUSUARIO,
-} from "../../services/api";
+} from "../../services/api"
 
 const EditProfileUser = () => {
-  const navigate = useNavigate();
-  const { id } = useParams();
-  const { user } = useAuth(); // ✅ USAMOS AUTH CONTEXT
+  const navigate = useNavigate()
+  const { id } = useParams()
+  const { user } = useAuth() // ✅ USAMOS AUTH CONTEXT
 
   const {
     register,
@@ -24,9 +24,9 @@ const EditProfileUser = () => {
 
   // 🟡 Iniciales si no hay avatar
   const getInitials = (nombre, apellido) => {
-    const n = nombre?.charAt(0)?.toUpperCase() ?? "";
-    const a = apellido?.charAt(0)?.toUpperCase() ?? "";
-    return n + a;
+    const n = nombre?.charAt(0)?.toUpperCase() ?? ""
+    const a = apellido?.charAt(0)?.toUpperCase() ?? ""
+    return n + a
   };
 
   // 🔵 TRAER USUARIO
@@ -47,37 +47,37 @@ const EditProfileUser = () => {
         // 🔥 CLAVE: el backend devuelve { usuario }
         const usuario = res.data.usuario;
 
-        setValue("email", usuario.correo);
-        setValue("firstname", usuario.name);
-        setValue("lastname", usuario.apellido);
+        setValue("email", usuario.correo)
+        setValue("firstname", usuario.name)
+        setValue("lastname", usuario.apellido)
         //setValue("password", "");
-        setValue("avatar", usuario.avatar ?? "");
+        setValue("avatar", usuario.avatar ?? "")
 
       } catch (error) {
-        console.error(error.response?.data || error);
-        toast.error("No tenés permisos para ver este usuario");
-        navigate("/");
+        console.error(error.response?.data || error)
+        toast.error("No tenés permisos para ver este usuario")
+        navigate("/")
       }
-    };
+    }
 
     fetchUser();
-  }, [id, user, setValue, navigate]);
+  }, [id, user, setValue, navigate])
 
   // 🟣 GUARDAR CAMBIOS
   const onSubmit = async (data) => {
     try {
-      let finalAvatar = data.avatar?.trim();
+      let finalAvatar = data.avatar?.trim()
 
       if (finalAvatar) {
-        const isValidImage = /\.(jpg|jpeg|png|webp)$/i.test(finalAvatar);
+        const isValidImage = /\.(jpg|jpeg|png|webp)$/i.test(finalAvatar)
         if (!isValidImage) {
           toast.error("El avatar debe ser JPG, JPEG, PNG o WEBP");
-          return;
+          return
         }
       }
 
       if (!finalAvatar) {
-        finalAvatar = getInitials(data.firstname, data.lastname);
+        finalAvatar = getInitials(data.firstname, data.lastname)
       }
 
       const updatedUser = {
@@ -99,21 +99,21 @@ const EditProfileUser = () => {
         }
       );
 
-      toast.success("Perfil actualizado correctamente 🎉");
+      toast.success("Perfil actualizado correctamente 🎉")
 
       await Swal.fire({
         title: "¡Perfil actualizado!",
         text: "Los cambios fueron guardados.",
         icon: "success",
         confirmButtonColor: "#e50914",
-      });
+      })
 
-      navigate("/");
+      navigate("/")
     } catch (error) {
-      console.error(error.response?.data || error);
-      toast.error("Error al actualizar el usuario");
+      console.error(error.response?.data || error)
+      toast.error("Error al actualizar el usuario")
     }
-  };
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black/70">

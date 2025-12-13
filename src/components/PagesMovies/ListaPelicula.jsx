@@ -14,11 +14,11 @@ const ListaPelicula = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
     // Tu lógica de rol: Asumo que si el rol es '69366436d9ae941a18015fc0', es Admin.
-    const isAdmin = user && user.role === '69366436d9ae941a18015fc0';
+    const isAdmin = user && user.role === '69366436d9ae941a18015fc0'
     const token = user?.token
 
-    const moviesPerPage = 12;
-    const toastShownRef = useRef(false);
+    const moviesPerPage = 12
+    const toastShownRef = useRef(false)
 
     // 🟢 Cargar películas
     useEffect(() => {
@@ -76,12 +76,12 @@ const ListaPelicula = () => {
                     position: "top-right",
                     autoClose: 2000,
                 });
-                toastShownRef.current = true;
+                toastShownRef.current = true
             }
         } else {
             toastShownRef.current = false;
         }
-    }, [search, filteredMovies.length]);
+    }, [search, filteredMovies.length])
 
     const totalPages =
         filteredMovies.length === 0
@@ -93,7 +93,7 @@ const ListaPelicula = () => {
         startIndex,
         startIndex + moviesPerPage
     );
-    const noResults = filteredMovies.length === 0;
+    const noResults = filteredMovies.length === 0
 
     return (
         <div className="min-h-screen bg-black/60 backdrop-blur-sm p-8 ">

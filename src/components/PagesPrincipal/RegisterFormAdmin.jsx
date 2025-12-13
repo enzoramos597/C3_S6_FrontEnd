@@ -1,12 +1,12 @@
-import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import { toast } from "react-toastify";
-import axios from "axios";
-import { API_REGISTERUSER, API_USERSINTOKEN } from "../../services/api";
+import { useForm } from "react-hook-form"
+import { Link, useNavigate } from "react-router-dom"
+import Swal from "sweetalert2"
+import { toast } from "react-toastify"
+import axios from "axios"
+import { API_REGISTERUSER, API_USERSINTOKEN } from "../../services/api"
 
 const RegisterFormAdmin = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const {
     register,
@@ -16,20 +16,20 @@ const RegisterFormAdmin = () => {
 
   // 🟡 Generar iniciales
   const getInitials = (nombre, apellido) => {
-    const n = nombre?.charAt(0)?.toUpperCase() ?? "";
-    const a = apellido?.charAt(0)?.toUpperCase() ?? "";
+    const n = nombre?.charAt(0)?.toUpperCase() ?? ""
+    const a = apellido?.charAt(0)?.toUpperCase() ?? ""
     return n + a;
   };
 
   const onSubmit = async (data) => {
     try {
-      const email = data.email.toLowerCase().trim();
+      const email = data.email.toLowerCase().trim()
 
       // 🔴 1. TRAER USUARIOS SIN TOKEN
-      const usersRes = await axios.get(API_USERSINTOKEN);
+      const usersRes = await axios.get(API_USERSINTOKEN)
 
       if (!usersRes.data?.usuarios) {
-        toast.error("No se pudieron obtener los usuarios");
+        toast.error("No se pudieron obtener los usuarios")
         return;
       }
 
@@ -50,14 +50,14 @@ const RegisterFormAdmin = () => {
       const avatarUrl = data.avatar?.trim();
 
       if (avatarUrl) {
-        const isValidImage = /\.(jpg|jpeg|png|webp)$/i.test(avatarUrl);
+        const isValidImage = /\.(jpg|jpeg|png|webp)$/i.test(avatarUrl)
         if (!isValidImage) {
           toast.error("El avatar debe ser JPG, JPEG, PNG o WEBP");
           return;
         }
-        finalAvatar = avatarUrl;
+        finalAvatar = avatarUrl
       } else {
-        finalAvatar = getInitials(data.firstname, data.lastname);
+        finalAvatar = getInitials(data.firstname, data.lastname)
       }
 
       // 🟣 4. OBJETO ADMIN
@@ -71,13 +71,13 @@ const RegisterFormAdmin = () => {
         favoritos: [],
         estado: 1,
         role: "admin", // 🔥 ADMIN
-      };
+      }
 
       // 🟢 5. CREAR ADMIN (NO PIDE TOKEN)
-      const res = await axios.post(API_REGISTERUSER, newAdmin);
+      const res = await axios.post(API_REGISTERUSER, newAdmin)
 
       if (res.data.result === "success") {
-        toast.success("Administrador creado correctamente 🎉");
+        toast.success("Administrador creado correctamente 🎉")
 
         await Swal.fire({
           title: "¡Administrador creado!",
@@ -88,7 +88,7 @@ const RegisterFormAdmin = () => {
 
         navigate("/");
       } else {
-        toast.error(res.data.mensaje || "Error al crear administrador");
+        toast.error(res.data.mensaje || "Error al crear administrador")
       }
 
     } catch (error) {

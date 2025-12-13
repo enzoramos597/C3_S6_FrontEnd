@@ -7,11 +7,11 @@ import { useAuth } from "../../contexts/AuthContext";
 import { API_MOVIEEDIT, API_OBTENERIDMOVIE } from "../../services/api";
 
 const UpdateMovie = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const { token } = useAuth();
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const { token } = useAuth()
 
-  const [peli, setPeli] = useState(null);
+  const [peli, setPeli] = useState(null)
 
   const config = {
     headers: { Authorization: `Bearer ${token}` },
@@ -20,10 +20,10 @@ const UpdateMovie = () => {
   useEffect(() => {
     const cargarDatos = async () => {
       try {
-        const res = await axios.get(`${API_OBTENERIDMOVIE}/${id}`, config);
+        const res = await axios.get(`${API_OBTENERIDMOVIE}/${id}`, config)
 
         // 👇 EL BACKEND DEVUELVE { pelicula: { ... } }
-        const p = res.data.pelicula;
+        const p = res.data.pelicula
 
         setPeli({
           _id: p._id,
@@ -40,18 +40,18 @@ const UpdateMovie = () => {
         });
 
       } catch (err) {
-        console.log(err);
+        console.log(err)
         toast.error("Error al cargar la película");
       }
     };
 
-    cargarDatos();
-  }, [id]);
+    cargarDatos()
+  }, [id])
 
   const validarCampos = () => {
-    if (!peli.original_title.trim()) return "El título es obligatorio";
-    if (!peli.detalle.trim()) return "El detalle es obligatorio";
-    if (!peli.poster.trim()) return "El poster es obligatorio";
+    if (!peli.original_title.trim()) return "El título es obligatorio"
+    if (!peli.detalle.trim()) return "El detalle es obligatorio"
+    if (!peli.poster.trim()) return "El poster es obligatorio"
     return null;
   };
 
@@ -63,8 +63,8 @@ const UpdateMovie = () => {
   };
 
   const guardarCambios = async () => {
-    const msg = validarCampos();
-    if (msg) return toast.error(msg);
+    const msg = validarCampos()
+    if (msg) return toast.error(msg)
 
     const confirm = await Swal.fire({
       title: "¿Está seguro?",
@@ -102,16 +102,16 @@ const UpdateMovie = () => {
         confirmButtonColor: "#e50914",
       });
 
-      navigate("/peliculas");
+      navigate("/peliculas")
 
     } catch (error) {
-      console.log(error);
-      toast.error("Error al actualizar la película");
+      console.log(error)
+      toast.error("Error al actualizar la película")
     }
   };
 
   if (!peli)
-    return <p className="text-white text-center mt-10">Cargando película...</p>;
+    return <p className="text-white text-center mt-10">Cargando película...</p>
 
   return (
     <div className="min-h-screen bg-cover bg-center flex items-center justify-center p-4 bg-black/90">

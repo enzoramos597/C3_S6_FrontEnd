@@ -34,7 +34,7 @@ const UploadMovie = () => {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
-      };
+      }
 
       // 1️⃣ TRAER LISTA DE PELÍCULAS
       const res = await axios.get(API_MOVIES, config);
@@ -52,7 +52,7 @@ const UploadMovie = () => {
 
       if (tituloExiste) {
         
-        toast.error("Ya existe una película con ese título ❌");
+        toast.error("Ya existe una película con ese título ❌")
         console.log("Ya existe una Pelicula con ese titulo console")
         return;
       }

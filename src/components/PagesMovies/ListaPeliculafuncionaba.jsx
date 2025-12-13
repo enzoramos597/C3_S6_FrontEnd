@@ -14,21 +14,21 @@ const ListaPelicula = () => {
 
   const navigate = useNavigate();
   const { user } = useAuth();
-  const isAdmin = user && user.role === '69366436d9ae941a18015fc0';
+  const isAdmin = user && user.role === '69366436d9ae941a18015fc0'
   const token = user?.token
   //console.log('Token en Peliculas', token)
   //const isAdmin = user?.type === "Administrador"
 
-  const moviesPerPage = 12;
-  const toastShownRef = useRef(false);
+  const moviesPerPage = 12
+  const toastShownRef = useRef(false)
 
   // 🟢 Cargar películas
   useEffect(() => {
     const fetchPeliculas = async () => {
       // 🚨 Verificar si el token existe antes de hacer la solicitud
       if (!token) {
-        console.error("No hay token de usuario disponible.");
-        return;
+        console.error("No hay token de usuario disponible.")
+        return
       }
 
       // ✅ Agregar el encabezado de autorización a la solicitud
@@ -39,30 +39,30 @@ const ListaPelicula = () => {
       };
 
       try {
-        const res = await axios.get(API_MOVIES, config);
+        const res = await axios.get(API_MOVIES, config)
 
         // 🛑 CORRECCIÓN: Acceder a la propiedad 'peliculas' de res.data, que es el array
-        const listaDePeliculas = res.data.peliculas || []; // Usamos [] como fallback por seguridad
+        const listaDePeliculas = res.data.peliculas || [] // Usamos [] como fallback por seguridad
 
         const activas = listaDePeliculas.filter( // <-- Filtramos el array, no el objeto
           (p) => p.estado?.toLowerCase() === "activo"
         );
-        setPeliculas(activas);
+        setPeliculas(activas)
 
       } catch (error) {
         // Manejo de errores específico (ej: si el token expiró)
-        console.error("Error al cargar películas:", error);
+        console.error("Error al cargar películas:", error)
         if (error.response && error.response.status === 401) {
-          toast.error("Tu sesión expiró. Por favor, vuelve a iniciar sesión. 🔒");
-          navigate('/iniciar-sesion'); // Redirigir si el token es inválido/expirado
+          toast.error("Tu sesión expiró. Por favor, vuelve a iniciar sesión. 🔒")
+          navigate('/iniciar-sesion') // Redirigir si el token es inválido/expirado
         }
       }
-    };
+    }
 
     // Llamar a la función solo si hay un token
-    fetchPeliculas();
+    fetchPeliculas()
     // El useEffect debe depender del token y del navigate si lo usas
-  }, [token, navigate]);
+  }, [token, navigate])
 
   // 🔍 Filtro de búsqueda
   const filteredMovies = peliculas.filter((peli) => {
@@ -72,8 +72,8 @@ const ListaPelicula = () => {
       peli.actores?.join(" ").toLowerCase().includes(texto) || // Nota: Corregí "Actores" a "actores" (minúscula) si quieres mantener la consistencia con la respuesta del backend
       peli.genero?.join(" ").toLowerCase().includes(texto) ||
       peli.Director?.join(" ").toLowerCase().includes(texto)
-    );
-  });
+    )
+  })
 
   // ⚠ Toast cuando no encuentra resultados
   useEffect(() => {
@@ -83,19 +83,19 @@ const ListaPelicula = () => {
           position: "top-right",
           autoClose: 2000,
         });
-        toastShownRef.current = true;
+        toastShownRef.current = true
       }
     } else {
-      toastShownRef.current = false;
+      toastShownRef.current = false
     }
-  }, [search, filteredMovies.length]);
+  }, [search, filteredMovies.length])
 
   const totalPages =
     filteredMovies.length === 0
       ? 1
-      : Math.ceil(filteredMovies.length / moviesPerPage);
+      : Math.ceil(filteredMovies.length / moviesPerPage)
 
-  const startIndex = (page - 1) * moviesPerPage;
+  const startIndex = (page - 1) * moviesPerPage
   const currentMovies = filteredMovies.slice(
     startIndex,
     startIndex + moviesPerPage

@@ -1,18 +1,18 @@
-import { useParams, Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import Swal from "sweetalert2";
-import { toast } from "react-toastify";
-import axios from "axios";
-import { useAuth } from "../../contexts/AuthContext";
-import { API_USERID, API_SHOW_ROLES, API_USER_CRUD } from "../../services/api";
+import { useParams, Link, useNavigate } from "react-router-dom"
+import { useEffect, useState } from "react"
+import Swal from "sweetalert2"
+import { toast } from "react-toastify"
+import axios from "axios"
+import { useAuth } from "../../contexts/AuthContext"
+import { API_USERID, API_SHOW_ROLES, API_USER_CRUD } from "../../services/api"
 
 const DetailPerfilAdmin = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const { token } = useAuth();
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const { token } = useAuth()
 
-  const [user, setUser] = useState(null);
-  const [roles, setRoles] = useState([]);
+  const [user, setUser] = useState(null)
+  const [roles, setRoles] = useState([])
 
   // =============================
   // CONFIG AXIOS
@@ -27,8 +27,8 @@ const DetailPerfilAdmin = () => {
   useEffect(() => {
     const cargarDatos = async () => {
       try {
-        const resUser = await axios.get(`${API_USERID}/${id}`, config);
-        const u = resUser.data.data;
+        const resUser = await axios.get(`${API_USERID}/${id}`, config)
+        const u = resUser.data.data
         console.log("que trae aqui detail",u)
         // Normalizados
         setUser({
@@ -41,7 +41,7 @@ const DetailPerfilAdmin = () => {
             "https://i.pinimg.com/originals/34/65/cd/3465cda198db3eef055503fbb826e526.jpg",
           estado: u.estado ?? 1,
           role: typeof u.role === "object" ? u.role._id : u.role,
-        });
+        })
 
         const resRoles = await axios.get(API_SHOW_ROLES, config);
         setRoles(resRoles.data.data);
@@ -57,29 +57,29 @@ const DetailPerfilAdmin = () => {
   // VALIDACIONES
   // =============================
   const validarCampos = () => {
-    if (!user.name.trim()) return "El nombre es obligatorio";
-    if (!user.apellido.trim()) return "El apellido es obligatorio";
-    if (!user.correo.trim()) return "El correo es obligatorio";
+    if (!user.name.trim()) return "El nombre es obligatorio"
+    if (!user.apellido.trim()) return "El apellido es obligatorio"
+    if (!user.correo.trim()) return "El correo es obligatorio"
 
-    const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!correoRegex.test(user.correo)) return "Correo inválido";
+    const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!correoRegex.test(user.correo)) return "Correo inválido"
 
-    if (!user.role) return "Debe seleccionar un rol";
+    if (!user.role) return "Debe seleccionar un rol"
 
-    return null;
-  };
+    return null
+  }
 
   // =============================
   // VALIDAR CORREO DUPLICADO
   // =============================
   const validarCorreoDuplicado = async () => {
     try {
-      const res = await axios.get(API_USER_CRUD, config); // trae TODOS los usuarios
-      const usuarios = res.data.data;
+      const res = await axios.get(API_USER_CRUD, config) // trae TODOS los usuarios
+      const usuarios = res.data.data
 
       return usuarios.some(
         (u) => u.correo === user.correo && u._id !== user._id
-      );
+      )
     } catch (err) {
       return false;
     }
@@ -92,25 +92,25 @@ const DetailPerfilAdmin = () => {
     setUser({
       ...user,
       [e.target.name]: e.target.value,
-    });
-  };
+    })
+  }
 
   // =============================
   // GUARDAR CAMBIOS
   // =============================
   const guardarCambios = async () => {
     // ▪ Validación básica
-    const msg = validarCampos();
+    const msg = validarCampos()
     if (msg) {
-      toast.error(msg);
-      return;
+      toast.error(msg)
+      return
     }
 
     // ▪ Validar email duplicado
-    const existe = await validarCorreoDuplicado();
+    const existe = await validarCorreoDuplicado()
     if (existe) {
-      toast.error("El correo ya pertenece a otro usuario");
-      return;
+      toast.error("El correo ya pertenece a otro usuario")
+      return
     }
 
     // ▪ Confirmación visual
@@ -139,7 +139,7 @@ const DetailPerfilAdmin = () => {
       console.log("Mostrar User",updatedUser)
       await axios.put(`${API_USER_CRUD}/${id}`, updatedUser, config);
 
-      toast.success("Usuario modificado correctamente 🎉");
+      toast.success("Usuario modificado correctamente 🎉")
 
       await Swal.fire({
         title: "¡Usuario modificado!",

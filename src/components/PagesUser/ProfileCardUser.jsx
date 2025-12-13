@@ -14,4 +14,4 @@ const ProfileCardUser = ({ name, avatar, onClick }) => {
   );
 };
 
-export default ProfileCardUser;
+export default ProfileCardUser

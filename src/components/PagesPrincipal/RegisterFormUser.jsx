@@ -1,24 +1,24 @@
-import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import { toast } from "react-toastify";
-import axios from "axios";
-import { API_REGISTERUSER } from "../../services/api";
+import { useForm } from "react-hook-form"
+import { Link, useNavigate } from "react-router-dom"
+import Swal from "sweetalert2"
+import { toast } from "react-toastify"
+import axios from "axios"
+import { API_REGISTERUSER } from "../../services/api"
 
 const RegisterFormUser = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm()
 
   const getInitials = (nombre, apellido) => {
-    const n = nombre?.charAt(0)?.toUpperCase() ?? "";
-    const a = apellido?.charAt(0)?.toUpperCase() ?? "";
-    return n + a;
-  };
+    const n = nombre?.charAt(0)?.toUpperCase() ?? ""
+    const a = apellido?.charAt(0)?.toUpperCase() ?? ""
+    return n + a
+  }
 
   const onSubmit = async (data) => {
     try {
@@ -27,14 +27,14 @@ const RegisterFormUser = () => {
       const avatarUrl = data.avatar?.trim();
 
       if (avatarUrl) {
-        const isValidImage = /\.(jpg|jpeg|png|webp)$/i.test(avatarUrl);
+        const isValidImage = /\.(jpg|jpeg|png|webp)$/i.test(avatarUrl)
         if (!isValidImage) {
           toast.error("El avatar debe ser una imagen JPG, JPEG, PNG o WEBP");
-          return;
+          return
         }
-        finalAvatar = avatarUrl;
+        finalAvatar = avatarUrl
       } else {
-        finalAvatar = getInitials(data.firstname, data.lastname);
+        finalAvatar = getInitials(data.firstname, data.lastname)
       }
 
       // OBJETO FINAL PARA EL BACKEND
@@ -48,7 +48,7 @@ const RegisterFormUser = () => {
         favoritos: [],
         estado: 1,
         role: "user", // 🔥 usar role user siempre
-      };
+      }
 
       // LLAMADA AL BACKEND REAL
       const res = await axios.post(API_REGISTERUSER, newUser)

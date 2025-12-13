@@ -1,17 +1,16 @@
-import { useState } from 'react';
-//import logo from '../assets/Logo_2.png';
-import logo from '../../assets/Logo_2.png';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react'
+import logo from '../../assets/Logo_2.png'
+import { useNavigate } from 'react-router-dom'
 
 const HeaderPrincipal
  = () => {
-    const [isOpen, setIsOpen] = useState(false);
-    const navigate = useNavigate();
+    const [isOpen, setIsOpen] = useState(false)
+    const navigate = useNavigate()
 
     const toggleMenu = () => {
-        setIsOpen(!isOpen);
+        setIsOpen(!isOpen)
         
-    };
+    }
 
     return (
         // Asegura que el navbar tenga un z-index alto para estar siempre arriba

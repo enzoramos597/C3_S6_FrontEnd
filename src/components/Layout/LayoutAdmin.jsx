@@ -1,12 +1,12 @@
 // LayoutAdmin.jsx
-import { useState } from "react";
-import HeaderAdmin from "../PagesAdmin/HeaderAdmin";
-import FooterAdmin from "../PagesAdmin/FooterAdmin";
-import { Outlet } from "react-router-dom";
-import FavoritosModalAdmin from "../PagesAdmin/FavoritosModalAdmin"; // default export
+import { useState } from "react"
+import HeaderAdmin from "../PagesAdmin/HeaderAdmin"
+import FooterAdmin from "../PagesAdmin/FooterAdmin"
+import { Outlet } from "react-router-dom"
+import FavoritosModalAdmin from "../PagesAdmin/FavoritosModalAdmin"
 
 const LayoutAdmin = () => {
-  const [openFavModal, setOpenFavModal] = useState(false);
+  const [openFavModal, setOpenFavModal] = useState(false)
 
   return (
     <div className="w-full min-h-screen flex flex-col bg-black/60">

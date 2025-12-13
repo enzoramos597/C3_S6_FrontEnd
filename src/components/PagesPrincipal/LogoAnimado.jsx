@@ -1,6 +1,6 @@
 //import Logo from '../assets/Logo_2.png';
-import { motion } from "framer-motion";
-import Logo from "../../assets/Logo_2.png";
+import { motion } from "framer-motion"
+import Logo from "../../assets/Logo_2.png"
 const LogoAnimado = () => {
   return (
     <div className="text-center mt-8">

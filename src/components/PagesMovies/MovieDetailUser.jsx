@@ -6,24 +6,24 @@ import { useAuth } from "../../contexts/AuthContext"
 import { API_OBTENERIDMOVIEUSER } from "../../services/api"
 import "react-toastify/dist/ReactToastify.css"
 
-// 1. CONSTANTES PARA IMÁGENES (Igual que en Admin)
-const API_BASEURL = import.meta.env.VITE_API_BASEURL;
-const BASE_IMG_URL = `${API_BASEURL}/`;
+// 1. CONSTANTES PARA IMÁGENES 
+const API_BASEURL = import.meta.env.VITE_API_BASEURL
+const BASE_IMG_URL = `${API_BASEURL}/`
 
-// 2. HELPER PARA OBTENER URL ABSOLUTA (Igual que en Admin)
+// 2. HELPER PARA OBTENER URL ABSOLUTA 
 const getAbsoluteImageUrl = (path) => {
-  if (!path || path === "") return null;
-  if (path.startsWith('http')) return path;
-  return `${BASE_IMG_URL}${encodeURI(path.startsWith('/') ? path.substring(1) : path)}`;
-};
+  if (!path || path === "") return null
+  if (path.startsWith('http')) return path
+  return `${BASE_IMG_URL}${encodeURI(path.startsWith('/') ? path.substring(1) : path)}`
+}
 
 // 3. HELPER PARA OBTENER EL ID SEGURO (La clave para arreglar el error 400)
 const getMovieId = (movie, paramsId) => {
     if (movie) {
         // Prioriza _id (Mongo), luego id, y si falla, usa el de la URL
-        return String(movie._id || movie.id || paramsId);
+        return String(movie._id || movie.id || paramsId)
     }
-    return String(paramsId);
+    return String(paramsId)
 };
 
 const MovieDetailUser = () => {
@@ -60,8 +60,8 @@ const MovieDetailUser = () => {
         if (err.response?.status === 404) {
           toast.error("Película no encontrada.");
         } else if (err.response?.status === 401) {
-          toast.error("Sesión expirada.");
-          navigate('/iniciar-sesion');
+          toast.error("Sesión expirada.")
+          navigate('/iniciar-sesion')
         } else {
           toast.error("Error al obtener la película.");
         }

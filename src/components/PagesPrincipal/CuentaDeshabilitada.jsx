@@ -1,25 +1,25 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
+import { useState } from "react"
+import { Link } from "react-router-dom"
+import { toast } from "react-toastify"
 
 const CuentaDeshabilitada = () => {
-  const [detalle, setDetalle] = useState("");
+  const [detalle, setDetalle] = useState("")
 
   const enviarCorreo = () => {
     if (!detalle.trim()) {
-      toast.error("Por favor ingrese un detalle del problema.");
+      toast.error("Por favor ingrese un detalle del problema.")
       return;
     }
 
-    const email = "enzo.j.ramos@gmail.com";
-    const subject = encodeURIComponent("Solicitud de habilitación de cuenta");
+    const email = "enzo.j.ramos@gmail.com"
+    const subject = encodeURIComponent("Solicitud de habilitación de cuenta")
     const body = encodeURIComponent(
       `Hola Enzo, tengo un inconveniente con mi cuenta:\n\n${detalle}`
-    );
+    )
 
-    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-    toast.success("Abriendo cliente de correo…");
-  };
+    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`
+    toast.success("Abriendo cliente de correo…")
+  }
 
   return (
     <div className="flex justify-center items-center min-h-[80vh] w-full p-4">

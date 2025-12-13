@@ -1,22 +1,22 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useForm } from "react-hook-form";
-import { useAuth } from "../../contexts/AuthContext";
-import { API_PERFILES } from "../../services/api";
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import axios from "axios"
+import { useForm } from "react-hook-form"
+import { useAuth } from "../../contexts/AuthContext"
+import { API_PERFILES } from "../../services/api"
 
 // Avatares
 //import doug from "../../assets/avatars/Doug.jpg";
 //import starwars from "../../assets/avatars/starwars.jpeg";
 //import starwars2 from "../../assets/avatars/starwars2.webp";
 //import starwars3 from "../../assets/avatars/starwars3.webp";
-import doug from "../../../public/avatars/Doug.jpg";  
-import starwars from "../../../public/avatars/starwars.jpeg";
-import starwars2 from "../../../public/avatars/starwars2.webp";
-import starwars3 from "../../../public/avatars/starwars3.webp";
+import doug from "../../../public/avatars/Doug.jpg"
+import starwars from "../../../public/avatars/starwars.jpeg"
+import starwars2 from "../../../public/avatars/starwars2.webp"
+import starwars3 from "../../../public/avatars/starwars3.webp"
 
 
-const avatars = [doug, starwars, starwars2, starwars3];
+const avatars = [doug, starwars, starwars2, starwars3]
 
 const CreateProfileUser = () => {
   const { user } = useAuth();
@@ -33,8 +33,8 @@ const CreateProfileUser = () => {
     formState: { errors },
   } = useForm();
 
-  const [selectedAvatar, setSelectedAvatar] = useState(null);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [selectedAvatar, setSelectedAvatar] = useState(null)
+  const [errorMessage, setErrorMessage] = useState("")
 
   const onSubmit = async (data) => {
     try {
@@ -56,16 +56,16 @@ const CreateProfileUser = () => {
       );
 
       // ✅ Volver al selector de perfiles
-      navigate("/profileselector");
+      navigate("/profileselector")
 
     } catch (error) {
-      console.error(error);
+      console.error(error)
 
       setErrorMessage(
         error.response?.data?.mensaje || "Error al crear el perfil"
-      );
+      )
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-black/90 flex items-center justify-center p-6">

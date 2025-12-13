@@ -7,9 +7,9 @@ import { API_IDMOVIES } from "../../services/api"
 import "react-toastify/dist/ReactToastify.css"
 
 // 🛑 CORRECCIÓN: Definimos las constantes para construir la URL absoluta antes de guardar.
-const API_BASEURL = import.meta.env.VITE_API_BASEURL;
+const API_BASEURL = import.meta.env.VITE_API_BASEURL
 // Aseguramos que la URL base termine en barra
-const BASE_IMG_URL = `${API_BASEURL}/`;
+const BASE_IMG_URL = `${API_BASEURL}/`
 
 // Helper para obtener el ID real de la película, manejando _id, id, o el param
 const getMovieId = (movie, paramsId) => {
@@ -36,10 +36,8 @@ const MAX_FAVORITOS = 5;
 
 const MovieDetail = () => {
     // 🚨 React Router usa el nombre del parámetro de la URL, que es 'movieId'
-    // si seguiste mi recomendación anterior, por eso usamos 'movieId' aquí.
-    // Si tu ruta es 'peliculas/:id', usa 'id'.
-    const { id: paramId, movieId: paramMovieId } = useParams();
-    // Usamos el ID correcto, priorizando 'id' si la ruta es '.../:id'
+    const { id: paramId, movieId: paramMovieId } = useParams()
+    // Elegimos el parámetro correcto
     const currentParamId = paramId || paramMovieId;
 
     const [movie, setMovie] = useState(null)
@@ -47,7 +45,7 @@ const MovieDetail = () => {
 
     const { user, updateUserFavoritos } = useAuth()
     const navigate = useNavigate()
-    const token = user?.token;
+    const token = user?.token
 
     // 1) Cargar película
     useEffect(() => {

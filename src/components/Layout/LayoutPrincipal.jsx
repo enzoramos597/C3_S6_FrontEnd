@@ -1,7 +1,6 @@
-import React from "react";
-import HeaderPrincipal from "../PagesPrincipal/HeaderPrincipal";
-import FooterPrincipal from "../PagesPrincipal/FooterPrincipal";
-import { Outlet } from "react-router-dom";
+import HeaderPrincipal from "../PagesPrincipal/HeaderPrincipal"
+import FooterPrincipal from "../PagesPrincipal/FooterPrincipal"
+import { Outlet } from "react-router-dom"
 
 
 const LayoutPrincipal = () => {

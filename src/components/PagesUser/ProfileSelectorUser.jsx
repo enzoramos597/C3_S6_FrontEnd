@@ -1,25 +1,25 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "../../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import axios from "axios";
-import ProfileCardUser from "../PagesUser/ProfileCardUser";
-import { API_PERFILES } from "../../services/api";
+import { useEffect, useState } from "react"
+import { useAuth } from "../../contexts/AuthContext"
+import { useNavigate } from "react-router-dom"
+import { toast } from "react-toastify"
+import axios from "axios"
+import ProfileCardUser from "../PagesUser/ProfileCardUser"
+import { API_PERFILES } from "../../services/api"
 
 const ProfileSelectorUser = () => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth()
+  const navigate = useNavigate()
 
-  const userId = user?._id;
-  const token = user?.token;
+  const userId = user?._id
+  const token = user?.token
 
-  const [perfiles, setPerfiles] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [perfiles, setPerfiles] = useState([])
+  const [loading, setLoading] = useState(true)
 
   // 🔥 TRAER PERFILES DESDE BACKEND
   useEffect(() => {
     const fetchPerfiles = async () => {
-      if (!userId || !token) return;
+      if (!userId || !token) return
 
       try {
         const res = await axios.get(
@@ -29,7 +29,7 @@ const ProfileSelectorUser = () => {
               Authorization: `Bearer ${token}`,
             },
           }
-        );
+        )
 
         const perfilesNormalizados = Array.isArray(res.data.perfiles)
           ? res.data.perfiles.map((p) => ({
@@ -37,20 +37,20 @@ const ProfileSelectorUser = () => {
               name: p.name,
               avatar: p.avatar,
             }))
-          : [];
+          : []
 
-        setPerfiles(perfilesNormalizados);
+        setPerfiles(perfilesNormalizados)
 
       } catch (error) {
-        console.error("Error obteniendo perfiles:", error);
-        toast.error("Error cargando perfiles");
+        console.error("Error obteniendo perfiles:", error)
+        toast.error("Error cargando perfiles")
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchPerfiles();
-  }, [userId, token]);
+    fetchPerfiles()
+  }, [userId, token])
 
   if (loading) {
     return (

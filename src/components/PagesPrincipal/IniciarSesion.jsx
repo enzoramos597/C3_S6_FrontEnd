@@ -1,16 +1,16 @@
-import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { useAuth } from "../../contexts/AuthContext";
+import { useForm } from "react-hook-form"
+import { Link, useNavigate } from "react-router-dom"
+import { toast } from "react-toastify"
+import { useAuth } from "../../contexts/AuthContext"
 
 const IniciarSesion = () => {
-  const navigate = useNavigate();
-  const { login } = useAuth();
+  const navigate = useNavigate()
+  const { login } = useAuth()
 
-  const { register, handleSubmit, formState: { errors }} = useForm();
+  const { register, handleSubmit, formState: { errors }} = useForm()
 
-  const ADMIN_ROLE_ID = '69366436d9ae941a18015fc0'; // Definir la constante
-  const USER_ROLE_ID = '6936638cd9ae941a18015fbb'; // Definir la constante
+  const ADMIN_ROLE_ID = '69366436d9ae941a18015fc0' // Definir la constante
+  const USER_ROLE_ID = '6936638cd9ae941a18015fbb' // Definir la constante
 
   const onSubmit = async (data) => {
     const user = await login(data.email, data.password);
@@ -26,23 +26,23 @@ const IniciarSesion = () => {
         "Tu cuenta está deshabilitada por falta de pago u otro inconveniente. " +
         "Por favor contacta al administrador."
       );
-      navigate("/cuenta-deshabilitada");
+      navigate("/cuenta-deshabilitada")
       return;
     }
 
     // Si está activo (estado = 1)
-    toast.success(`Bienvenido ${user.name} 🎉`);
-    console.log("Propiedad user.rol:", user?.role);
-    console.log("ADMIN_ROLE_ID:", ADMIN_ROLE_ID);
-    console.log("USER_ROLE_ID:", USER_ROLE_ID);
+    toast.success(`Bienvenido ${user.name} 🎉`)
+    console.log("Propiedad user.rol:", user?.role)
+    console.log("ADMIN_ROLE_ID:", ADMIN_ROLE_ID)
+    console.log("USER_ROLE_ID:", USER_ROLE_ID)
     if (user?.rol === ADMIN_ROLE_ID) {
-        navigate("/admin"); // Ruta base para el admin
+        navigate("/admin") // Ruta base para el admin
     } 
     // Si el rol del usuario (user.role) coincide con el ID de User
     else if (user?.rol === USER_ROLE_ID) {
-        navigate("/user"); // Ruta base para el usuario estándar
+        navigate("/user") // Ruta base para el usuario estándar
     }
-  };
+  }
 
   return (
     <div className="flex justify-center items-center min-h-[82vh] w-full">

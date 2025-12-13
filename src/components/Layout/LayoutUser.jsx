@@ -1,9 +1,9 @@
 // LayoutAdmin.jsx
-import { useState } from "react";
-import HeaderUser from "../PagesUser/HeaderUser";
-import FooterUser from "../PagesUser/FooterUser";
-import { Outlet } from "react-router-dom";
-import FavoritosModalAdmin from "../PagesAdmin/FavoritosModalAdmin"; // default export
+import { useState } from "react"
+import HeaderUser from "../PagesUser/HeaderUser"
+import FooterUser from "../PagesUser/FooterUser"
+import { Outlet } from "react-router-dom"
+import FavoritosModalAdmin from "../PagesAdmin/FavoritosModalAdmin"
 
 const LayoutUser = () => {
   const [openFavModal, setOpenFavModal] = useState(false);

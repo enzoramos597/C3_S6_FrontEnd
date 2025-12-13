@@ -8,35 +8,35 @@ import { API_IDMOVIES } from "../../services/api"
 import "react-toastify/dist/ReactToastify.css"
 
 // 🛑 CORRECCIÓN: Definimos las constantes para construir la URL absoluta antes de guardar.
-const API_BASEURL = import.meta.env.VITE_API_BASEURL;
+const API_BASEURL = import.meta.env.VITE_API_BASEURL
 // Aseguramos que la URL base termine en barra
-const BASE_IMG_URL = `${API_BASEURL}/`;
+const BASE_IMG_URL = `${API_BASEURL}/`
 
 // Helper para obtener el ID real de la película, manejando _id, id, o el param
 const getMovieId = (movie, paramsId) => {
     if (movie) {
         // Asegura que el ID sea un string, priorizando _id (Mongo), luego id, y finalmente el de la URL
-        return String(movie._id || movie.id || paramsId);
+        return String(movie._id || movie.id || paramsId)
     }
-    return String(paramsId);
+    return String(paramsId)
 };
 
 // 🛑 FUNCIÓN CORREGIDA: Construye la URL de la imagen completa
 const getAbsoluteImageUrl = (path) => {
     if (!path || path === "") return null;
     // Si ya es una URL absoluta, la devuelve como está
-    if (path.startsWith('http')) return path;
+    if (path.startsWith('http')) return path
 
     // Si es una ruta relativa, le anteponemos la URL base de tu servidor.
     // Usamos encodeURI para manejar posibles espacios o caracteres especiales en la ruta.
-    return `${BASE_IMG_URL}${encodeURI(path.startsWith('/') ? path.substring(1) : path)}`;
+    return `${BASE_IMG_URL}${encodeURI(path.startsWith('/') ? path.substring(1) : path)}`
 };
 
 // 🛑 CONSTANTE: Definimos el límite máximo de favoritos
-const MAX_FAVORITOS = 5;
+const MAX_FAVORITOS = 5
 
 const MovieDetail = () => {
-    const { id: paramId } = useParams();
+    const { id: paramId } = useParams()
     const [movie, setMovie] = useState(null)
     const [loading, setLoading] = useState(false)
 
@@ -57,22 +57,22 @@ const MovieDetail = () => {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
-            };
+            }
 
             try {
-                setLoading(true);
+                setLoading(true)
                 const res = await axios.get(`${API_IDMOVIES}/${paramId}`, config)
                 setMovie(res.data.pelicula || res.data)
 
             } catch (err) {
                 console.error("Error al cargar detalles de la película:", err)
                 if (err.response?.status === 404) {
-                    toast.error("Película no encontrada.");
+                    toast.error("Película no encontrada.")
                 } else if (err.response?.status === 401) {
-                    toast.error("Sesión expirada o no autorizada.");
+                    toast.error("Sesión expirada o no autorizada.")
                     navigate('/iniciar-sesion');
                 } else {
-                    toast.error("Error al obtener la película. Volviendo a inicio.");
+                    toast.error("Error al obtener la película. Volviendo a inicio.")
                 }
                 navigate("/")
             } finally {
@@ -133,21 +133,21 @@ const MovieDetail = () => {
 
     // 4) Eliminar de favoritos
     const eliminarFavorito = async () => {
-        if (!user) return toast.error("Debes iniciar sesión");
+        if (!user) return toast.error("Debes iniciar sesión")
 
         try {
-            const currentMovieId = getMovieId(movie, paramId);
+            const currentMovieId = getMovieId(movie, paramId)
 
             const nuevosFav = user.favoritos.filter(
                 (f) => String(f.id) !== currentMovieId
             )
 
-            await updateUserFavoritos(nuevosFav);
+            await updateUserFavoritos(nuevosFav)
 
             toast.info("Película eliminada de favoritos ❌")
         } catch (error) {
-            console.error("Error al eliminar favorito:", error.response?.data || error);
-            toast.error("Error al eliminar favorito");
+            console.error("Error al eliminar favorito:", error.response?.data || error)
+            toast.error("Error al eliminar favorito")
         }
     };
 
