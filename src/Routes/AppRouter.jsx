@@ -21,6 +21,8 @@ import LayoutUser from "../components/Layout/LayoutUser";
 import CreateProfileUser from "../components/PagesUser/CreateProfileUser";
 import MovieDetailUser from "../components/PagesMovies/MovieDetailUser";
 import ManageProfilesUser from "../components/PagesUser/ManageProfilesUser";
+import EditProfileUser from "../components/PagesUser/EditProfileUser";
+import RegisterFormAdmin from "../components/PagesPrincipal/RegisterFormAdmin";
 const AppRouter = () => {
 
      const {user} = useAuth();
@@ -53,6 +55,7 @@ const AppRouter = () => {
           <Route path="iniciar-sesion" element={<IniciarSesion/>} />
           <Route path="/cuenta-deshabilitada" element={<CuentaDeshabilitada/>} />
           <Route path="/registrar-usuario" element={<RegisterFormUser/>} />
+          <Route path="/registrar-admin" element={<RegisterFormAdmin/>} />
         </Route>
         )}
 
@@ -68,7 +71,8 @@ const AppRouter = () => {
             <Route path="peliculas" element= {<ListaPelicula />} />
             <Route path="peliculas/:id" element={< MovieDetailUser />} />
             <Route path="createperfiluser" element={<CreateProfileUser />} />    
-            <Route path="manageprofiles" element={<ManageProfilesUser />} />    
+            <Route path="manageprofiles" element={<ManageProfilesUser />} /> 
+            <Route path="edit-profile/:id" element={<EditProfileUser />} />   
           </Route>
         )}
          {/* 🔴 RUTAS ADMIN */}

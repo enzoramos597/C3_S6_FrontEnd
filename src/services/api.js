@@ -5,6 +5,7 @@ export const API_LOGIN = `${import.meta.env.VITE_API_BASEURL}/api/auth/login`;
 
 // 💡 Endpoint para OBTENER TODOS los usuarios
 export const API_USERS = `${import.meta.env.VITE_API_BASEURL}/api/mostrarUsuarios`;
+export const API_USERSINTOKEN = `${import.meta.env.VITE_API_BASEURL}/api/recorrerUsuariosintoken`;
 export const API_REGISTERUSER = `${import.meta.env.VITE_API_BASEURL}/api/agregarUsuario`; 
 export const API_USER_CRUD = `${import.meta.env.VITE_API_BASEURL}/api/modificarUsuario`;
 export const API_USER_MODIFICARUNUSUARIO = `${import.meta.env.VITE_API_BASEURL}/api/modificarUsuarioUser` ;

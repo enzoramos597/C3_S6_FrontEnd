@@ -155,11 +155,11 @@ const ModalEditProfile = ({ isOpen, onClose, profile }) => {
               src={avatar}
               onClick={() => setSelectedAvatar(avatar)}
               className={`w-16 h-16 rounded-full cursor-pointer object-cover border-4 transition 
-                ${selectedAvatar === avatar
+ ${selectedAvatar === avatar
                   ? "border-red-600 scale-105"
                   : "border-transparent"
                 }
-              `}
+ `}
             />
           ))}
         </div>
