@@ -6,10 +6,15 @@ import { useAuth } from "../../contexts/AuthContext";
 import { API_PERFILES } from "../../services/api";
 
 // Avatares
-import doug from "../../assets/avatars/Doug.jpg";
-import starwars from "../../assets/avatars/starwars.jpeg";
-import starwars2 from "../../assets/avatars/starwars2.webp";
-import starwars3 from "../../assets/avatars/starwars3.webp";
+//import doug from "../../assets/avatars/Doug.jpg";
+//import starwars from "../../assets/avatars/starwars.jpeg";
+//import starwars2 from "../../assets/avatars/starwars2.webp";
+//import starwars3 from "../../assets/avatars/starwars3.webp";
+import doug from "../../../public/avatars/Doug.jpg";  
+import starwars from "../../../public/avatars/starwars.jpeg";
+import starwars2 from "../../../public/avatars/starwars2.webp";
+import starwars3 from "../../../public/avatars/starwars3.webp";
+
 
 const avatars = [doug, starwars, starwars2, starwars3];
 
